@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 
 import { Container, Carousel, Imagem, Title, Desc, Button, SliderController, Images } from './heroSliderStyle'
 import { ChevronLeftCircle, ChevronRightCircle } from 'styled-icons/boxicons-regular';
 
-const HeroSlider = ({ pics }) => {
+const HeroSlider = () => {
     //#region Slideshow
-    const size = pics.length
+    const [urls, setUrls] = useState(0)
+    const size = urls.length
     const lastSliderIndex = (size + 1)
     const [slide, setSlide] = useState(1)
     const [img, setImg] = useState(1)
@@ -45,19 +47,29 @@ const HeroSlider = ({ pics }) => {
     //#endregion
 
     //#region Mapear imagens
-    const imagens = pics.map((image, index) =>
-        <Imagem key={index} src={image.url} animationNumber={img == index + 1 ? index % 3 : null} />
-    )
+    const [imagens, setImagens] = useState()
+
+    useEffect(async () => {
+        const data = (await axios.get("/api/hero")).data
+        setUrls(data)
+       
+        const imgs = data.map((image, index) =>
+            <Imagem key={index} src={image.url} animationNumber={img == index + 1 ? index % 3 : null} />
+        )
+        setImagens(imgs)
+    }, [])
+
+
     //#endregion
-    
+
     return (
         <Container>
             <Carousel slidePos={slide} onTransitionEnd={slideEnd} animated={animate}>
-                <Imagem key='0' src={pics[size - 1].url} />
+                <Imagem key='0' src={urls[size - 1].url} />
 
                 {imagens}
 
-                <Imagem key={lastSliderIndex} src={pics[0].url } />
+                <Imagem key={lastSliderIndex} src={urls[0].url} />
             </Carousel>
 
             <Title>Produtora Go</Title>

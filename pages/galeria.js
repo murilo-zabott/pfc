@@ -5,12 +5,22 @@ import axios from 'axios'
 import React from 'react'
 import { Container } from '../pageStyles/galeriaStyle'
 
-const Galeria = ({ images }) => {
-  const imagens = images.map((image, index) =>
-    <figure key={index}>
-      <img src={image.url} />
-    </figure>
-  )
+const Galeria = () => {
+  const [jsx, setJsx] = useState()
+
+  useEffect(async () => {
+    const images = (await axios.get("/api/gallery")).data
+
+    const imagens = images.map((image, index) =>
+      <figure key={index}>
+        <img src={image.url} />
+      </figure>
+    )
+
+    setJsx(imagens)
+  }, [])
+
+
 
   return (
     <>
@@ -19,22 +29,10 @@ const Galeria = ({ images }) => {
       </Head>
       <Header />
       <Container>
-        {imagens}
+        {jsx}
       </Container>
     </>
   )
-}
-
-export async function getStaticProps() {
-  const url = `${process.env.BP}/api/gallery`
-  const images = (await axios.get(url)).data
-
-  return {
-    props: {
-      images,
-    },
-    revalidate: 30,
-  }
 }
 
 export default Galeria

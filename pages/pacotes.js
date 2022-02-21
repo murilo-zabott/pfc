@@ -3,12 +3,19 @@ import Head from 'next/head'
 import Header from '../components/Layout/Header/headerIndex'
 import { Container, CardsWrapper } from '../pageStyles/pacotesStyle'
 import Card from '../components/Page-Pacotes/Card/cardIndex'
+import React, { useEffect, useState } from 'react'
 
-const Pacotes = ({ packages }) => {
+const Pacotes = () => {
+  const [jsx, setJsx] = useState()
 
-  const cards = packages.map((pacote, index) =>
-    <Card img={pacote.image} text={pacote.title} price={`R$ ${pacote.price}`} key={index} />
-  )
+  useEffect(async () => {
+    const packages = (await axios.get("/api/package")).data
+    const cards = packages.map((pacote, index) =>
+      <Card img={pacote.image} text={pacote.title} price={`R$ ${pacote.price}`} key={index} />
+    )
+    setJsx(cards)
+  }, [])
+
 
   return (
     <>
@@ -18,23 +25,11 @@ const Pacotes = ({ packages }) => {
       <Header />
       <Container>
         <CardsWrapper min={100}>
-          {cards}
+          {jsx}
         </CardsWrapper>
       </Container>
     </>
   )
-}
-
-export async function getStaticProps() {
-  const url = `${process.env.BP}/api/package`
-  const packages = (await axios.get(url)).data
-
-  return {
-    props: {
-      packages,
-    },
-    revalidate: 30,
-  }
 }
 
 export default Pacotes
