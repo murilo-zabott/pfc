@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Header from '../components/Layout/Header/headerIndex'
 
 import axios from 'axios'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { Container } from '../pageStyles/galeriaStyle'
 
 const Galeria = () => {

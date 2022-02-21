@@ -52,11 +52,14 @@ const HeroSlider = () => {
     useEffect(async () => {
         const data = (await axios.get("/api/hero")).data
         setUrls(data)
-       
         const imgs = data.map((image, index) =>
             <Imagem key={index} src={image.url} animationNumber={img == index + 1 ? index % 3 : null} />
         )
-        setImagens(imgs)
+        setImagens(<>
+            <Imagem key='0' src={data[data.length - 1].url} />
+            {imgs}
+            <Imagem key={lastSliderIndex} src={data[0].url} />
+        </>)
     }, [])
 
 
@@ -65,11 +68,10 @@ const HeroSlider = () => {
     return (
         <Container>
             <Carousel slidePos={slide} onTransitionEnd={slideEnd} animated={animate}>
-                <Imagem key='0' src={urls[size - 1].url} />
 
                 {imagens}
 
-                <Imagem key={lastSliderIndex} src={urls[0].url} />
+
             </Carousel>
 
             <Title>Produtora Go</Title>
