@@ -12,7 +12,8 @@ const handler = nc({
 })
 
 handler.post(async (req, res) => {
-  const texto = download(req.body.key)
+  const texto = await download(req.body.key)
+  console.log('api: '+texto)
   res.send(texto)
 })
 

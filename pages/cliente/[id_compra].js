@@ -17,11 +17,11 @@ const Compra = () => {
     const array = [];
 
     const downloadImage = async (key) => {
-        const resp = await axios.post("/api/download", { key: key }, {
+        const resp = (await axios.post("/api/download", { key: key }, {
             headers: {
                 "Content-Type": "application/json"
             },
-        })
+        })).data
         console.log(resp)
     }
 

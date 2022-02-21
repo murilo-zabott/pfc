@@ -38,5 +38,7 @@ export const download = async (filename) => {
   // });
 
   const texto = ""+__dirname
+  console.log(texto)
   return texto
+  
 }
