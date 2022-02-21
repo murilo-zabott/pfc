@@ -30,12 +30,13 @@ export const download = async (filename) => {
     Key: filename,
   }
 
-  const folder = path.join(__dirname, '..', '..', '..', '..', 'public', filename)
+  // const folder = path.join(__dirname, '..', '..', '..', '..', 'public', filename)
   
-  const objeto = await s3.getObject(params, (err, data) => {
-    if (err) console.error(err);
-    fs.writeFileSync(folder, data.Body);
-  });
+  // const objeto = await s3.getObject(params, (err, data) => {
+  //   if (err) console.error(err);
+  //   fs.writeFileSync(folder, data.Body);
+  // });
 
-  return objeto
+  const texto = ""+__dirname
+  return texto
 }

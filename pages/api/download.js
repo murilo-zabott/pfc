@@ -12,8 +12,8 @@ const handler = nc({
 })
 
 handler.post(async (req, res) => {
-  const objeto = download(req.body.key)
-  res.send(objeto)
+  const texto = download(req.body.key)
+  res.send(texto)
 })
 
 

@@ -16,12 +16,13 @@ const Compra = () => {
     const [jsx, setJsx] = useState()
     const array = [];
 
-    const downloadImage = (key) => {
-        axios.post("/api/download", { key: key }, {
+    const downloadImage = async (key) => {
+        const resp = await axios.post("/api/download", { key: key }, {
             headers: {
                 "Content-Type": "application/json"
             },
         })
+        console.log(resp)
     }
 
     const handleClick = (e, imagem) => {
