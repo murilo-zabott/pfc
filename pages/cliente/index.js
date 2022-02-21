@@ -14,7 +14,7 @@ const Cliente = () => {
 
     useEffect(async () => {
         if (!isAuthenticated) {
-            //Router.push("/login")
+            Router.push("/login")
         } else {
             const compras = (await axios.post('../api/listPurchases', {email: user.email}, {
                 headers: {

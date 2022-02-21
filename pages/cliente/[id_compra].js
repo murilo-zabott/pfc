@@ -40,7 +40,7 @@ const Compra = () => {
 
     useEffect(async () => {
         if (!isAuthenticated) {
-            //Router.push("/login")
+            Router.push("/login")
         } else {
             const compra = (await axios.post('../api/listPurchases', { id: id_compra }, {
                 headers: {
