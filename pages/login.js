@@ -1,59 +1,103 @@
-import Router from 'next/router'
-import React, { useState, useContext, useEffect } from 'react'
-
 import Head from 'next/head'
-import Header from '../components/Layout/Header/headerIndex'
-import { AuthContext } from '../contexts/AuthContext'
+import React, { useState } from 'react'
 
-import { Container } from '../pageStyles/loginStyle'
-import { Email } from '@styled-icons/material/Email'
-import { PhoneAlt } from '@styled-icons/fa-solid/PhoneAlt'
+import { Email, Phone } from 'styled-icons/material'
+
+import Header from '@/components/Header/headerIndex'
+import { Container, LoginForm } from '@/pageStyles/loginStyle'
+import axios from 'axios'
 
 const Login = () => {
-    const { isAuthenticated, user, login } = useContext(AuthContext)
+	const [email, setEmail] = useState('')
+	const [phone, setPhone] = useState('')
+	const [errors, setErrors] = useState()
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            Router.push(user.isAdm ? '/admin' : '/cliente')
-        }
-    }, [])
+	function clear() {
+		setEmail('')
+		setPhone('')
+	}
 
-    const [values, setValues] = useState({ email: "", phone: "" })
+	function submitForm(e) {
+		e.preventDefault()
+		setErrors()
 
-    const handleChange = (e) => {
-        setValues(prevValues => ({
-            ...prevValues,
-            [e.target.name]: e.target.value
-        }))
-    }
+		const data = {
+			email: email,
+			password: phone,
+		}
 
-    const submitLogin = async (e) => {
-        e.preventDefault()
+		axios
+			// .post('authenticate', data)
+			.post('http://127.0.0.1:8000/api/authenticate', data)
+			.then(res => {
+				clear()
+				const a = document.createElement('a')
+				a.href = res.data
+				document.body.appendChild(a)
+				a.click()
+				document.body.removeChild(a)
+			})
+			.catch(err => {
+				var erro
+				if (err.response.data.errors.email) {
+					erro = err.response.data.errors.email[0]
+				} else if (err.response.data.errors.phone) {
+					erro = err.response.data.errors.phone[0]
+				} else if (err.response.data.errors.credentialError) {
+					erro = err.response.data.errors.credentialError
+				} else {
+					erro = 'Houve um problema no sistema. Por favor, tente novamente.'
+				}
+				setErrors(
+					<div className="erros">
+						<li>{erro}</li>
+					</div>
+				)
+			})
+	}
 
-        const bool = await login(values)
+	return (
+		<>
+			<Head>
+				<title>Login</title>
+			</Head>
+			<Header />
+			<Container>
+				<h1>Seja bem vindo!</h1>
+				<h2>Faça seu login para acessar seu painel de controle.</h2>
+				{errors}
+				<LoginForm onSubmit={e => submitForm(e)}>
+					<label>Email</label>
+					<div>
+						<Email />
+						<div></div>
+						<input
+							type="text"
+							name="email"
+							placeholder="seuemail@dominio.com"
+							value={email}
+							onChange={e => setEmail(e.target.value)}
+						/>
+					</div>
 
-        e.target.classList.toggle('erro', bool)
-    }
+					<label>Telefone com DDD</label>
+					<div>
+						<Phone />
+						<div></div>
+						<input
+							type="phone"
+							name="phone"
+							placeholder="Apenas números!"
+							value={phone}
+							onChange={e => setPhone(e.target.value)}
+						/>
+					</div>
 
-    return (
-        <>
-            <Head>
-                <title>Login</title>
-            </Head>
-            <Header />
-            <Container>
-                <h1>Seja bem vindo!</h1>
-                <h2>Faça seu login para acessar a área de usuário</h2>
-                <form onSubmit={(e) => submitLogin(e)}>
-                    <input type='text' name="email" placeholder='E-mail' value={values.email} onChange={(e) => handleChange(e)} required></input>
-                    <Email />
-                    <input type="tel" pattern="[0-9]{8,11}" name="phone" placeholder='Telefone' value={values.phone} onChange={(e) => handleChange(e)} required></input>
-                    <PhoneAlt />
-                    <input type='submit' value="Logar"></input>
-                </form>
-            </Container>
-        </>
-    )
+					<button type="submit">LOGIN</button>
+				</LoginForm>
+			</Container>
+		</>
+	)
 }
 
 export default Login
